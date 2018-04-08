@@ -1,6 +1,11 @@
 from skimage import io, color
 import numpy as np
 import tensorflow as tf
+import os
+import time
+
+os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID"    
+os.environ["CUDA_VISIBLE_DEVICES"]="2"
 
 def build_graph(X): #X=[h,w,3]
 	h,w=X.shape[:2]
@@ -75,6 +80,8 @@ def f2(Xp,G,reuse):
 ###################################################
 
 for size in [32,64,128,256]:
+	start = time.clock()
+
 	Xt=read_image(size,"../images/1-content.jpg")
 	Gt=build_graph(Xt)
 	Xs=read_image(size,"../images/1-style.jpg")
@@ -144,3 +151,5 @@ for size in [32,64,128,256]:
 	print ("----")
 	Xf=sess.run(X).astype(np.float64)
 	save_image(Xf)
+
+	print ("Time taken for "+str(size)+"is: "+str(time.clock()-start))
